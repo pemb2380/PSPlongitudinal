@@ -39,7 +39,7 @@ p = ggplot(conpsp.study, aes(conpsp.study$component_1, conpsp.study$volume,fill 
   
     ylim(-100, 8000) +
 
-    coord_polar(start=0) +
+    coord_polar(start=0)
 p
 
 q = ggplot(pspcon.study, aes(pspcon.study$component_1, as.numeric(levels(pspcon.study$volume))[pspcon.study$volume],fill = 'increased covariance')) + 

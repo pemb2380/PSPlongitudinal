@@ -1,0 +1,61 @@
+---
+title: "Plot of components with increased and reduced covariance in PSP"
+author: "David Whiteside"
+date: "10 July 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("dplyr")
+library("ggplot2")
+
+# open table of covariance results for control - psp
+results.file = "C://Users/d_j_w/Documents/PSP_longitudinal/conpsp.txt"
+conpsp.study <- read.table(results.file, header = FALSE, na.strings = c("", "NA"), fill=TRUE)
+conpsp.study = rename(conpsp.study, ica_label = 'V1', voxels = 'V2', volume = 'V3', component_1 = 'V4', component_2 = 'V5')
+
+#filter out unlabelled components
+conpsp.study = filter(conpsp.study, !is.na(component_1) | component_1 != "")
+
+# open table of covariance results for psp - control
+results.file = "C://Users/d_j_w/Documents/PSP_longitudinal/pspcon.txt"
+pspcon.study <- read.table(results.file, header = FALSE, na.strings = c("", "NA"), fill=TRUE)
+pspcon.study = rename(pspcon.study, ica_label = 'V1', voxels = 'V2', volume = 'V3', component_1 = 'V4', component_2 = 'V5')
+
+#filter out unlabelled components
+pspcon.study = filter(pspcon.study, !is.na(component_1) | component_1 != "")
+pspcon.study$volume <- droplevels(pspcon.study$volume) #refactor to avoid erros
+
+```
+
+```{r results, echo=FALSE}
+
+#plot the results
+
+p = ggplot(conpsp.study, aes(conpsp.study$component_1, conpsp.study$volume,fill = 'reduced covariance')) + 
+    geom_bar(width = 0.85, stat="identity", fill ='blue') +
+  
+    ylim(-100, 8000) +
+
+    coord_polar(start=0) +
+p
+
+q = ggplot(pspcon.study, aes(pspcon.study$component_1, as.numeric(levels(pspcon.study$volume))[pspcon.study$volume],fill = 'increased covariance')) + 
+    geom_bar(width = 0.85, stat="identity", fill ='orange') +
+    ylim(-100, 4000) +
+    coord_polar(start=0)
+q
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+`
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
